@@ -7,7 +7,7 @@
 
 
 
-A slight difference in infixtopostfix !!!!:Remember
+# A slight difference in infixtopostfix !!!!:Remember
  ## original : infix to postfix
 ```
 while (!stack.isEmpty() && getPrecedence(c) <= getPrecedence(stack.peek())) {
