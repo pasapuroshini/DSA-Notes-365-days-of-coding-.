@@ -26,149 +26,108 @@ if the operator is ^ , then push into stack with poppping out top from stack.
 
 Java Code:
 ```
-import java.util.*;
+import java.util.Stack;
 
-class TUF {
-  static boolean isalpha(char c) {
-    if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
-      return true;
+class InfixToPrefix {
+
+    // A utility function to return precedence of a given operator
+    static int getPrecedence(char ch) {
+        switch (ch) {
+            case '+':
+            case '-':
+                return 1;
+            case '*':
+            case '/':
+                return 2;
+            case '^':
+                return 3;
+        }
+        return -1; // Invalid character
     }
-    return false;
-  }
 
-  static boolean isdigit(char c) {
-    if (c >= '0' && c <= '9') {
-      return true;
+    // A utility function to check if a character is an operator
+    static boolean isOperator(char ch) {
+        return ch == '+' || ch == '-' || ch == '*' || ch == '/' || ch == '^';
     }
-    return false;
-  }
 
-  static boolean isOperator(char c) {
-    return (!isalpha(c) && !isdigit(c));
-  }
-
-  static int getPriority(char C) {
-    if (C == '-' || C == '+')
-      return 1;
-    else if (C == '*' || C == '/')
-      return 2;
-    else if (C == '^')
-      return 3;
-
-    return 0;
-  }
-
-  // Reverse the letters of the word
-  static String reverse(char str[], int start, int end) {
-
-    // Temporary variable to store character
-    char temp;
-    while (start < end) {
-
-      // Swapping the first and last character
-      temp = str[start];
-      str[start] = str[end];
-      str[end] = temp;
-      start++;
-      end--;
+    // Function to reverse a string and swap '(' with ')'
+    static String reverse(String exp) {
+        StringBuilder reversed = new StringBuilder();
+        for (int i = exp.length() - 1; i >= 0; i--) {
+            char ch = exp.charAt(i);
+            if (ch == '(') {
+                reversed.append(')');
+            } else if (ch == ')') {
+                reversed.append('(');
+            } else {
+                reversed.append(ch);
+            }
+        }
+        return reversed.toString();
     }
-    return String.valueOf(str);
-  }
 
-  static String infixToPostfix(char[] infix1) {
-    System.out.println(infix1);
-    String infix = '(' + String.valueOf(infix1) + ')';
+    // Function to convert infix expression to prefix
+    static String infixToPrefix(String infix) {
+        // Step 1: Reverse the infix expression
+        String reversedInfix = reverse(infix);
 
-    int l = infix.length();
-    Stack < Character > char_stack = new Stack < > ();
-    String output = "";
+        // Step 2: Convert reversed infix to postfix
+        String postfix = infixToPostfix(reversedInfix);
 
-    for (int i = 0; i < l; i++) {
+        // Step 3: Reverse the postfix expression to get prefix
+        return reverse(postfix);
+    }
 
-      // If the scanned character is an
-      // operand, add it to output.
-      if (isalpha(infix.charAt(i)) || isdigit(infix.charAt(i)))
-        output += infix.charAt(i);
+    // Function to convert infix to postfix (used in prefix conversion)
+    static String infixToPostfix(String infix) {
+        StringBuilder result = new StringBuilder();
+        Stack<Character> stack = new Stack<>();
 
-      // If the scanned character is an
-      // ‘(‘, push it to the stack.
-      else if (infix.charAt(i) == '(')
-        char_stack.add('(');
+        for (int i = 0; i < infix.length(); i++) {
+            char c = infix.charAt(i);
 
-      // If the scanned character is an
-      // ‘)’, pop and output from the stack
-      // until an ‘(‘ is encountered.
-      else if (infix.charAt(i) == ')') {
-        while (char_stack.peek() != '(') {
-          output += char_stack.peek();
-          char_stack.pop();
+            // If the character is an operand, add it to the result
+            if (Character.isLetterOrDigit(c)) {
+                result.append(c);
+            }
+            // If the character is '(', push it onto the stack
+            else if (c == '(') {
+                stack.push(c);
+            }
+            // If the character is ')', pop until '(' is encountered
+            else if (c == ')') {
+                while (!stack.isEmpty() && stack.peek() != '(') {
+                    result.append(stack.pop());
+                }
+                stack.pop(); // Remove '(' from the stack
+            }
+            // If the character is an operator
+            else if (isOperator(c)) {
+                while (!stack.isEmpty() &&
+                        (getPrecedence(c) < getPrecedence(stack.peek()) ||
+                        (getPrecedence(c) == getPrecedence(stack.peek()) && c != '^'))) {
+                    result.append(stack.pop());
+                }
+                stack.push(c);
+            }
         }
 
-        // Remove '(' from the stack
-        char_stack.pop();
-      }
-
-      // Operator found
-      else {
-        if (isOperator(char_stack.peek())) {
-          while ((getPriority(infix.charAt(i)) <
- getPriority(char_stack.peek())) 
-          ||
-(getPriority(infix.charAt(i)) <=
- getPriority(char_stack.peek()) &&
-            infix.charAt(i) == '^')) {
-            output += char_stack.peek();
-            char_stack.pop();
-          }
-
-          // Push current Operator on stack
-          char_stack.add(infix.charAt(i));
+        // Pop all remaining operators from the stack
+        while (!stack.isEmpty()) {
+            result.append(stack.pop());
         }
-      }
-    }
-    while (!char_stack.empty()) {
-      output += char_stack.pop();
-    }
-    return output;
-  }
-
-  static String infixToPrefix(char[] infix) {
-    /*
-     * Reverse String Replace ( with ) and vice versa Get Postfix Reverse Postfix *
-     */
-    int l = infix.length;
-
-    // Reverse infix
-    String infix1 = reverse(infix, 0, l - 1);
-    infix = infix1.toCharArray();
-
-    // Replace ( with ) and vice versa
-    for (int i = 0; i < l; i++) {
-
-      if (infix[i] == '(') {
-        infix[i] = ')';
-        i++;
-      } else if (infix[i] == ')') {
-        infix[i] = '(';
-        i++;
-      }
+        return result.toString();
     }
 
-    String prefix = infixToPostfix(infix);
-
-    // Reverse postfix
-    prefix = reverse(prefix.toCharArray(), 0, l - 1);
-
-    return prefix;
-  }
-
-  public static void main(String[] args) {
-    String s = ("(p+q)*(c-d)");
-    System.out.println("Infix expression: " + s);
-    System.out.print("Prefix expression: ");
-    System.out.print(infixToPrefix(s.toCharArray()));
-  }
+    // Main method to test the conversion
+    public static void main(String[] args) {
+        String infix = "(A+B)*(C-D)";
+        System.out.println("Infix Expression: " + infix);
+        String prefix = infixToPrefix(infix);
+        System.out.println("Prefix Expression: " + prefix);
+    }
 }
+
 ```
 Output:
 
