@@ -1,8 +1,8 @@
 # Given an infix expression, Your task is to convert the given infix expression to a postfix expression.
 
-Infix Expression: <operand><operator><operand>.
+Infix Expression:  operand  operator operand.
 
-Postfix Expression: <operand><operand><operator>.
+Postfix Expression: operand operand operator.
 
 ## Steps:
 
@@ -16,12 +16,12 @@ Postfix Expression: <operand><operand><operator>.
   If Operand:
     Append directly to result.
     (e.g., A, B, 1)
-  If (:
+  If '(':
     Push to the stack.
     (Marks the start of a subexpression.)
 
 
-  If ):
+  If ')':
     Pop and append operators from the stack until ( is encountered.
     Discard the (.
 
@@ -29,6 +29,7 @@ Postfix Expression: <operand><operand><operator>.
 
     Pop and append all operators from the stack with higher or equal precedence.
     Push the current operator onto the stack.
+    
 5.After Traversing:
    Pop and append all remaining operators in the stack to result.
   (Ensure no unmatched ( remains.)
