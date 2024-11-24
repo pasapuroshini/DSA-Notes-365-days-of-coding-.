@@ -13,25 +13,36 @@ Postfix Expression: operand operand operator.
 3.Use a StringBuilder (result) to build the postfix expression.
 
 4.Traverse the Infix Expression:
+
   If Operand:
+  
     Append directly to result.
+    
     (e.g., A, B, 1)
+    
   If '(':
+  
     Push to the stack.
+    
     (Marks the start of a subexpression.)
 
 
   If ')':
+  
     Pop and append operators from the stack until ( is encountered.
+    
     Discard the (.
 
   If Operator (+, -, *, /, ^):
 
     Pop and append all operators from the stack with higher or equal precedence.
+    
     Push the current operator onto the stack.
     
 5.After Traversing:
+
    Pop and append all remaining operators in the stack to result.
+   
   (Ensure no unmatched ( remains.)
   
 6.Return the Postfix Expression:
