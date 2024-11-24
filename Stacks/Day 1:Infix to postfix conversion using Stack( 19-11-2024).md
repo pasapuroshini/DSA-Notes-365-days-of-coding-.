@@ -1,10 +1,17 @@
 # Given an infix expression, Your task is to convert the given infix expression to a postfix expression.
+
 Infix Expression: <operand><operator><operand>.
+
 Postfix Expression: <operand><operand><operator>.
+
 ## Steps:
+
 1.Initialize Stack and Result:
+
 2.Use a Stack to store operators and parentheses.
+
 3.Use a StringBuilder (result) to build the postfix expression.
+
 4.Traverse the Infix Expression:
   If Operand:
     Append directly to result.
@@ -12,6 +19,7 @@ Postfix Expression: <operand><operand><operator>.
   If (:
     Push to the stack.
     (Marks the start of a subexpression.)
+
 
   If ):
     Pop and append operators from the stack until ( is encountered.
