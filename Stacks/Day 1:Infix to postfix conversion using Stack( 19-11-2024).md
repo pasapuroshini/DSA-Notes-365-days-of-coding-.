@@ -33,7 +33,9 @@ Postfix Expression: operand operand operator.
 5.After Traversing:
    Pop and append all remaining operators in the stack to result.
   (Ensure no unmatched ( remains.)
+  
 6.Return the Postfix Expression:
+
 7.The final result contains the postfix expression.
 
 
